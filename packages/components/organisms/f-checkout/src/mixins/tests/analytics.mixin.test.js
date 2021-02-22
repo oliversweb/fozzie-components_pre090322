@@ -14,6 +14,13 @@ const localVue = createLocalVue();
 localVue.use(VueI18n);
 localVue.use(Vuex);
 
+const eventData = {
+    action: 'start',
+    isLoggedIn: true,
+    error: ['postcodeNotCovered'],
+    autofill: ['address.line1'],
+    changes: ['address.line1']
+};
 
 describe('checkout analytics', () => {
     let wrapper;
@@ -28,14 +35,6 @@ describe('checkout analytics', () => {
     });
 
     describe('trackFormAction :: ', () => {
-        const eventData = {
-            action: 'start',
-            isLoggedIn: true,
-            error: 'postcodeNotCovered',
-            autofill: 'address.line1',
-            changes: 'address.line1'
-        };
-
         beforeEach(() => {
             wrapper = shallowMount(checkoutAnalytics, {
                 render () {},
