@@ -102,10 +102,10 @@ import ErrorPage from './Error.vue';
 
 import { CHECKOUT_METHOD_DELIVERY, TENANT_MAP, VALIDATIONS } from '../constants';
 import checkoutValidationsMixin from '../mixins/validations.mixin';
+import checkoutAnalyticsMixin from '../mixins/analytics.mixin';
 import EventNames from '../event-names';
 import tenantConfigs from '../tenants';
 import mapUpdateCheckoutRequest from '../services/mapper';
-import { trackInitialLoad, trackFormInteraction } from '../services/analytics';
 
 export default {
     name: 'VueCheckout',
@@ -125,7 +125,12 @@ export default {
         UserNote
     },
 
-    mixins: [validationMixin, VueGlobalisationMixin, checkoutValidationsMixin],
+    mixins: [
+        validationMixin,
+        VueGlobalisationMixin,
+        checkoutValidationsMixin,
+        checkoutAnalyticsMixin
+    ],
 
     props: {
         getCheckoutUrl: {
@@ -281,14 +286,7 @@ export default {
 
     async mounted () {
         await this.initialise();
-
-        trackInitialLoad(
-            this.basket,
-            this.restaurantId,
-            this.isLoggedIn
-        );
-
-        trackFormInteraction(this.trackingData('start'));
+        this.trackFormLoad();
     },
 
     methods: {
@@ -542,19 +540,19 @@ export default {
             }
         },
 
+        /**
+        * Check for is valid - no inline messages
+        * If form is valid try to call `submitCheckout`
+        * Catch and handle any errors
+        */
         async onFormSubmit () {
-            /*
-            * Check for is valid - no inline messages
-            * If form is valid try to call `submitCheckout`
-            * Catch and handle any errors
-            */
-            trackFormInteraction(this.trackingData('submit'));
+            this.trackFormAction('submit');
 
             if (!this.isFormValid()) {
                 const validationState = validations.getFormValidationState(this.$v);
                 this.$emit(EventNames.CheckoutValidationError, validationState);
 
-                trackFormInteraction(this.trackingData('inline_error', validationState.invalidFields));
+                this.trackFormAction('inline_error', validationState.invalidFields);
 
                 this.$logger.logWarn(
                     'Checkout Validation Error',
@@ -568,11 +566,10 @@ export default {
 
             try {
                 await this.submitCheckout();
-
-                trackFormInteraction(this.trackingData('success'));
+                this.trackFormAction('success');
             } catch (error) {
                 this.handleErrorState(error);
-                trackFormInteraction(this.trackingData('error', 'notOrderable'));
+                this.trackFormAction('error', 'notOrderable');
             } finally {
                 this.shouldDisableCheckoutButton = false;
             }
@@ -600,23 +597,6 @@ export default {
         */
         isValidPostcode () {
             return validations.isValidPostcode(this.address.postcode, this.$i18n.locale);
-        },
-
-        /**
-         * Return object of passed action and error
-         * along with state values `isLoggedIn`, `changes` and `autofill`
-         *
-         */
-        trackingData (action, error) {
-            const data = {
-                action,
-                error: error || null,
-                isLoggedIn: this.isLoggedIn,
-                changes: this.changes,
-                autofill: this.autofill
-            };
-
-            return data;
         }
     },
 
