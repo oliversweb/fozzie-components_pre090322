@@ -1,10 +1,10 @@
 {
   "name": "@justeat/f-analytics",
   "description": "Fozzie Analytics - Encapsulates the GTM / Google Analytics functionality",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/f-analytics.umd.min.js",
   "files": [
-    "dist" 
+    "dist"
   ],
   "homepage": "https://github.com/justeat/fozzie-components/tree/master/packages/components/atoms/f-analytics",
   "contributors": [

@@ -1,7 +1,5 @@
 <template>
-    <div data-test-id="analytics">
-        I am the one and only 'f-analytics' component
-    </div>
+    <div data-test-id="analytics" />
 </template>
 
 <script>
