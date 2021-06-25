@@ -3,7 +3,7 @@
 //     withKnobs, select, boolean
 // } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
-import Analytics from '../src/components/Analytics.vue';
+import analytics from '../src/components/Analytics.vue';
 
 export default {
     title: 'Components/Atoms',
@@ -11,8 +11,11 @@ export default {
 };
 
 export const AnalyticsComponent = () => ({
-    components: { Analytics },
+    components: { analytics },
     props: {
+        gtmIdd: 'GTM-123456A',
+        name: 'test-harness',
+        locale: 'en-GB'
     },
     template: '<analytics />'
 });

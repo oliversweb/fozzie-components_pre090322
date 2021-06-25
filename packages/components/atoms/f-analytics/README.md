@@ -78,7 +78,7 @@ The `f-analytics` needs to be included in the markup like a regular component.  
 <f-analytics
     gtm-id="GTM-123456A"
     name="my_feature"
-    :locale="en-GB"
+    :locale="$i18n.locale"
 />
 ```
 

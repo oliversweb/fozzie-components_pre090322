@@ -8,8 +8,8 @@ describe('f-analytics component tests', () => {
         analyticsComponent.waitForComponent();
     });
 
-    it('should display the f-analytics component', () => {
+    it('should be present in the markup', () => {
         // Assert
-        expect(analyticsComponent.isComponentDisplayed()).toBe(true);
+        expect(analyticsComponent.isComponentPresent()).toBe(true);
     });
 });

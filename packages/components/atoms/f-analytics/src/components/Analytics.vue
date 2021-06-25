@@ -3,6 +3,10 @@
 </template>
 
 <script>
+
+import { mapState, mapActions } from 'vuex';
+import fAnalyticsModule from '../store/analyticsModule';
+
 export default {
     name: 'Analytics',
 
@@ -23,33 +27,28 @@ export default {
         }
     },
 
-    data () {
-        return {
-            platformData: {
-                environment: '',
-                name: this.name,
-                appType: 'Web',
-                applicationId: 7,
-                userAgent: '',
-                branding: '',
-                country: '',
-                language: '',
-                jeUserPercentage: 0,
-                currency: '',
-                version: '',
-                instancePosition: ''
-            }
-        };
+    computed:
+    {
+        ...mapState('fAnalyticsModule', ['platformData'])
     },
 
     created () {
-        if (process.server) {
+        if (!this.$store.hasModule('fAnalyticsModule')) {
+            this.$store.registerModule('fAnalyticsModule', fAnalyticsModule);
+        }
+
+        if (this.isServerSide()) {
             // Only available serverside
-            this.platformData.environment = process.env.justEatEnvironment || 'N/A';
-            this.platformData.version = process.env.FEATURE_VERSION || 'N/A';
-            this.platformData.instancePosition = process.env.INSTANCE_POSITION || 'N/A';
+            const platformData = { ...this.platformData };
+
+            platformData.environment = process.env.justEatEnvironment || 'localhost';
+            platformData.version = process.env.FEATURE_VERSION || '0.0.0.0';
+            platformData.instancePosition = process.env.INSTANCE_POSITION || 'N/A';
+
             // Is of type `httponly` so need to read serverside
-            this.platformData.jeUserPercentage = this.$cookies['je-user_percentage'] || 0;
+            platformData.jeUserPercentage = this.$cookies.get('je-user_percentage') || 0;
+
+            this.updatePlatformData(platformData);
         }
     },
 
@@ -60,6 +59,12 @@ export default {
     },
 
     methods: {
+        ...mapActions('fAnalyticsModule', ['updatePlatformData']),
+
+        isServerSide () {
+            return typeof (window) === 'undefined';
+        },
+
         preparePage () {
             if (!window.dataLayer) {
                 const headJsGtmTag = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -84,11 +89,18 @@ export default {
         },
 
         prepareAnalytics () {
-            this.platformData.userAgent = navigator.userAgent || 'N/A';
-            this.platformData.branding = this.getBrand(this.locale);
-            this.platformData.country = this.getCountry(this.locale);
-            this.platformData.language = this.getLanguage(this.locale);
-            this.platformData.currency = this.getCurrency(this.locale);
+            const platformData = { ...this.platformData };
+
+            platformData.name = this.name;
+            platformData.appType = 'Web';
+            platformData.applicationId = 7;
+            platformData.userAgent = navigator.userAgent || 'N/A';
+            platformData.branding = this.getBrand(this.locale);
+            platformData.country = this.getCountry(this.locale);
+            platformData.language = this.getLanguage(this.locale);
+            platformData.currency = this.getCurrency(this.locale);
+
+            this.updatePlatformData(platformData);
         },
 
         pushAnalytics () {

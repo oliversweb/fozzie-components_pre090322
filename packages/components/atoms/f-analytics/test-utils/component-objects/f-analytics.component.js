@@ -12,7 +12,7 @@ module.exports = class Analytics extends Page {
         super.waitForComponent(this.component);
     }
 
-    isComponentDisplayed () {
+    isComponentPresent () {
         return this.component.isDisplayed();
     }
 };
