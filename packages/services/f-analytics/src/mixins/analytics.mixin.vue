@@ -1,7 +1,3 @@
-<template>
-    <div data-test-id="analytics" />
-</template>
-
 <script>
 
 import { mapState, mapActions } from 'vuex';
@@ -69,7 +65,6 @@ export default {
         ...mapActions('fAnalyticsModule', ['updatePlatformData']),
 
         preparePage () {
-            console.log('gtmSettings', this.gtmSettings); // eslint-disable-line
             if (!window.dataLayer) {
                 const queryString = (this.gtmSettings.auth !== undefined)
                     ? `&gtm_auth=${this.gtmSettings.auth}&gtm_preview=${this.gtmSettings.preview}&gtm_cookies_win=${this.gtmSettings.cookiesWin}`

@@ -18,8 +18,7 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^~include-media/(.*)$': '<rootDir>../../node_modules/include-media/$1',
-        '^~@justeat/(.*)$': '<rootDir>../../node_modules/@justeat/$1',
-        '\\.(css|scss)$': 'jest-transform-stub'
+        '^~@justeat/(.*)$': '<rootDir>../../node_modules/@justeat/$1'
     },
 
     snapshotSerializers: [
@@ -31,11 +30,6 @@ module.exports = {
             hideStyleWarn: true // We hide style warnings given the first time we run the tests it complains about some styles. The second time the tests are run, the warning disappears. https://github.com/vuejs/vue-jest/issues/178#issuecomment-529175129
         }
     },
-
-    modulePathIgnorePatterns: [
-        './test/accessibility/',
-        './test/component/'
-    ],
 
     testURL: 'http://localhost/'
 
