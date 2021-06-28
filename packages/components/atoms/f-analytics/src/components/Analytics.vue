@@ -11,12 +11,19 @@ export default {
     name: 'Analytics',
 
     props: {
-        gtmId: {
-            type: String,
-            default: 'GTM-XXXXXXX'
+        gtmSettings: {
+            type: Object,
+            default: () => (
+                {
+                    id: 'GTM-XXXXXXX',
+                    auth: '',
+                    preview: '',
+                    cookiesWin: ''
+                }
+            )
         },
 
-        name: {
+        featureName: {
             type: String,
             default: ''
         },
@@ -61,23 +68,24 @@ export default {
     methods: {
         ...mapActions('fAnalyticsModule', ['updatePlatformData']),
 
-        isServerSide () {
-            return typeof (window) === 'undefined';
-        },
-
         preparePage () {
+            console.log('gtmSettings', this.gtmSettings); // eslint-disable-line
             if (!window.dataLayer) {
+                const queryString = (this.gtmSettings.auth !== undefined)
+                    ? `&gtm_auth=${this.gtmSettings.auth}&gtm_preview=${this.gtmSettings.preview}&gtm_cookies_win=${this.gtmSettings.cookiesWin}`
+                    : '';
+
                 const headJsGtmTag = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${this.gtmId}');`;
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl${queryString};f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','${this.gtmSettings.id}');`;
                 const script = document.createElement('script');
                 script.text = headJsGtmTag;
                 document.head.prepend(script);
 
                 const iframeTag = document.createElement('iframe');
-                iframeTag.src = `https://www.googletagmanager.com/ns.html?id=${this.gtmId}`;
+                iframeTag.src = `https://www.googletagmanager.com/ns.html?id=${this.gtmSettings.id}`;
                 iframeTag.setAttribute('height', 0);
                 iframeTag.setAttribute('width', 0);
                 iframeTag.style.display = 'none';
@@ -91,7 +99,7 @@ export default {
         prepareAnalytics () {
             const platformData = { ...this.platformData };
 
-            platformData.name = this.name;
+            platformData.name = this.featureName;
             platformData.appType = 'Web';
             platformData.applicationId = 7;
             platformData.userAgent = navigator.userAgent || 'N/A';
@@ -159,6 +167,10 @@ export default {
                 default:
                     return 'EUR';
             }
+        },
+
+        isServerSide () {
+            return typeof (window) === 'undefined';
         }
     }
 };
