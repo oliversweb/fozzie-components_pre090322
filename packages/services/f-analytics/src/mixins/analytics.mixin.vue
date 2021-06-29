@@ -36,23 +36,8 @@ export default {
     },
 
     created () {
-        if (!this.$store.hasModule('fAnalyticsModule')) {
-            this.$store.registerModule('fAnalyticsModule', fAnalyticsModule);
-        }
-
-        if (this.isServerSide()) {
-            // Only available serverside
-            const platformData = { ...this.platformData };
-
-            platformData.environment = process.env.justEatEnvironment || 'localhost';
-            platformData.version = process.env.FEATURE_VERSION || '0.0.0.0';
-            platformData.instancePosition = process.env.INSTANCE_POSITION || 'N/A';
-
-            // Is of type `httponly` so need to read serverside
-            platformData.jeUserPercentage = this.$cookies.get('je-user_percentage') || 0;
-
-            this.updatePlatformData(platformData);
-        }
+        this.registerStoreModule();
+        this.prepareServersideAnalytics();
     },
 
     mounted () {
@@ -64,12 +49,35 @@ export default {
     methods: {
         ...mapActions('fAnalyticsModule', ['updatePlatformData']),
 
+        registerStoreModule () {
+            if (!this.$store.hasModule('fAnalyticsModule')) {
+                this.$store.registerModule('fAnalyticsModule', fAnalyticsModule);
+            }
+        },
+
+        prepareServersideAnalytics () {
+            if (this.isServerSide()) {
+                // Only available serverside
+                const platformData = { ...this.platformData };
+
+                platformData.environment = process.env.justEatEnvironment || 'localhost';
+                platformData.version = process.env.FEATURE_VERSION || '0.0.0.0';
+                platformData.instancePosition = process.env.INSTANCE_POSITION || 'N/A';
+
+                // Is of type `httponly` so need to read serverside
+                platformData.jeUserPercentage = this.$cookies.get('je-user_percentage') || 0;
+
+                this.updatePlatformData(platformData);
+            }
+        },
+
         preparePage () {
             if (!window.dataLayer) {
                 const queryString = (this.gtmSettings.auth !== undefined)
                     ? `&gtm_auth=${this.gtmSettings.auth}&gtm_preview=${this.gtmSettings.preview}&gtm_cookies_win=${this.gtmSettings.cookiesWin}`
                     : '';
 
+                // https://developers.google.com/tag-manager/quickstart
                 const headJsGtmTag = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -95,7 +103,7 @@ export default {
             const platformData = { ...this.platformData };
 
             platformData.name = this.featureName;
-            platformData.appType = 'Web';
+            platformData.appType = 'web';
             platformData.applicationId = 7;
             platformData.userAgent = navigator.userAgent || 'N/A';
             platformData.branding = this.getBrand(this.locale);
@@ -125,17 +133,17 @@ export default {
         getCountry (locale) {
             switch (locale) {
                 case 'en-GB':
-                    return 'UK';
+                    return 'uk';
                 case 'en-IE':
-                    return 'IE';
+                    return 'ie';
                 case 'it-IT':
-                    return 'IT';
+                    return 'it';
                 case 'es-ES':
-                    return 'ES';
+                    return 'es';
                 case 'en-AU':
-                    return 'AU';
+                    return 'au';
                 case 'en-NZ':
-                    return 'NZ';
+                    return 'nz';
                 default:
                     return '';
             }
@@ -154,13 +162,13 @@ export default {
         getCurrency (locale) {
             switch (locale) {
                 case 'en-GB':
-                    return 'GBP';
+                    return 'gbp';
                 case 'en-AU':
-                    return 'AUD';
+                    return 'aud';
                 case 'en-NZ':
-                    return 'NZD';
+                    return 'nzd';
                 default:
-                    return 'EUR';
+                    return 'eur';
             }
         },
 
