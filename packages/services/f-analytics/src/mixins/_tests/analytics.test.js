@@ -9,6 +9,7 @@ import {
 } from './helpers/setup';
 
 const localVue = createLocalVue();
+
 localVue.use(Vuex);
 
 describe('Analytics', () => {

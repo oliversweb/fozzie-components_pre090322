@@ -3,8 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import analyticsMixin from '../analytics.mixin.vue';
 import {
     propsData,
-    createStore,
-    $cookies
+    createStore
 } from './helpers/setup';
 
 const localVue = createLocalVue();
@@ -47,10 +46,7 @@ describe('Analytics', () => {
                     {
                         propsData,
                         store: createStore(),
-                        localVue,
-                        mocks: {
-                            $cookies
-                        }
+                        localVue
                     }
                 );
 
@@ -66,7 +62,7 @@ describe('Analytics', () => {
 
             it('should not attempt to re-append the GTM tag if the dataLayer is already present', () => {
                 // Arrange
-                window.dataLayer = 'all ready done the deed';
+                window.dataLayer = jest.fn();
 
                 // Act
                 shallowMount(
@@ -74,10 +70,7 @@ describe('Analytics', () => {
                     {
                         propsData,
                         store: createStore(),
-                        localVue,
-                        mocks: {
-                            $cookies
-                        }
+                        localVue
                     }
                 );
 
@@ -142,10 +135,7 @@ describe('Analytics', () => {
                         {
                             propsData: { ...propsData, locale: localeArg },
                             store: createStore(),
-                            localVue,
-                            mocks: {
-                                $cookies
-                            }
+                            localVue
                         }
                     );
 
@@ -172,7 +162,7 @@ describe('Analytics', () => {
                 jest.spyOn(component.mixins[0].methods, 'preparePage').mockImplementationOnce(() => true);
                 jest.spyOn(component.mixins[0].methods, 'prepareAnalytics').mockImplementationOnce(() => true);
                 jest.spyOn(component.mixins[0].methods, 'isServerSide').mockReturnValue(false);
-                windowsPushMock = jest.fn().mockImplementation(() => true);
+                windowsPushMock = jest.fn();
                 window.dataLayer = {
                     push: windowsPushMock
                 };
@@ -205,10 +195,7 @@ describe('Analytics', () => {
                     {
                         propsData,
                         store: createStore(expected),
-                        localVue,
-                        mocks: {
-                            $cookies
-                        }
+                        localVue
                     }
                 );
 

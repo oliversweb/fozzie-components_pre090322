@@ -1,45 +1,11 @@
 import AnalyticsModule from '../analyticsModule';
+import {
+    defaultState,
+    modifieldState
+} from '../../mixins/_tests/helpers/setup';
 
 const { actions, mutations } = AnalyticsModule;
-
-const {
-    updatePlatformData
-} = actions;
-
-const defaultState = {
-    platformData: {
-        environment: '',
-        name: '',
-        appType: '',
-        applicationId: 0,
-        userAgent: '',
-        branding: '',
-        country: '',
-        language: '',
-        jeUserPercentage: 0,
-        currency: '',
-        version: '',
-        instancePosition: ''
-    }
-};
-
-const newState = {
-    platformData: {
-        environment: 'test-environment',
-        name: 'test-name',
-        appType: 'test-appType',
-        applicationId: 9,
-        userAgent: 'test-userAgent',
-        branding: 'test-branding',
-        country: 'zu',
-        language: 'ze',
-        jeUserPercentage: 88,
-        currency: 'zud',
-        version: '9.8.7.6',
-        instancePosition: '999'
-    }
-};
-
+const { updatePlatformData } = actions;
 let state = AnalyticsModule.state();
 
 describe('AnalyticsModule', () => {
@@ -57,7 +23,7 @@ describe('AnalyticsModule', () => {
         describe(`${updatePlatformData} ::`, () => {
             it('should update state with `platformData`', () => {
                 // Act
-                mutations.updatePlatformData(state, newState);
+                mutations.updatePlatformData(state, modifieldState);
 
                 // Assert
                 expect(state).toMatchSnapshot();
@@ -72,10 +38,10 @@ describe('AnalyticsModule', () => {
                 const commit = jest.fn();
 
                 // Act
-                updatePlatformData({ commit }, newState);
+                updatePlatformData({ commit }, modifieldState);
 
                 // Assert
-                expect(commit).toHaveBeenCalledWith('updatePlatformData', newState);
+                expect(commit).toHaveBeenCalledWith('updatePlatformData', modifieldState);
             });
         });
     });

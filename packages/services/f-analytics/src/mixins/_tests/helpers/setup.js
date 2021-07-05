@@ -17,6 +17,23 @@ const defaultState = {
     }
 };
 
+const modifieldState = {
+    platformData: {
+        environment: 'test-environment',
+        name: 'test-name',
+        appType: 'test-appType',
+        applicationId: 9,
+        userAgent: 'test-userAgent',
+        branding: 'test-branding',
+        country: 'zu',
+        language: 'ze',
+        jeUserPercentage: 88,
+        currency: 'zud',
+        version: '9.8.7.6',
+        instancePosition: '999'
+    }
+};
+
 const defaultActions = {
     updatePlatformData: jest.fn()
 };
@@ -49,6 +66,7 @@ export {
     propsData,
     defaultState,
     defaultActions,
+    modifieldState,
     createStore,
     $cookies
 };

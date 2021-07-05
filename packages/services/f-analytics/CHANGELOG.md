@@ -6,10 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 v0.2.0
 ------------------------------
-*June 24, 2021*
+*July 1, 2021*
 
 ### Added
-- Partial `platformData` to deliver mvp
+- Remove markup and convert to `Service`
 
 
 v0.1.0
