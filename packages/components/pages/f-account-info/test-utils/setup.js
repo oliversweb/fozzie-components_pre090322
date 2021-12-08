@@ -82,3 +82,10 @@ export const consumerViewModel = {
     ...consumerDetailsMappedModel,
     ...consumerAddressMappedModel
 };
+
+export const consumerStateModel = {
+    consumer: {
+        ...consumerDetailsMappedModel,
+        ...consumerAddressMappedModel
+    }
+};
